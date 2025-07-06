@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dodge the Rocks</title>
+  <style>
+    body { margin: 0; background: #111; color: white; text-align: center; }
+    canvas { background: #222; display: block; margin: 0 auto; }
+  </style>
+</head>
+<body>
+  <h1>Dodge the Rocks</h1>
+  <canvas id="game" width="400" height="600"></canvas>
+  <script>
+    const canvas = document.getElementById('game');
+    const ctx = canvas.getContext('2d');
+
+    const player = {
+      x: 180, y: 550,
+      width: 40, height: 40,
+      speed: 5
+    };
+
+    const rocks = [];
+    const rockSize = 30;
+    let gameOver = false;
+
+    function spawnRock() {
+      const x = Math.random() * (canvas.width - rockSize);
+      rocks.push({ x: x, y: -rockSize });
+    }
+
+    function drawPlayer() {
+      ctx.fillStyle = 'lime';
+      ctx.fillRect(player.x, player.y, player.width, player.height);
+    }
+
+    function drawRocks() {
+      ctx.fillStyle = 'red';
+      rocks.forEach(rock => {
+        ctx.fillRect(rock.x, rock.y, rockSize, rockSize);
+      });
+    }
+
+    function updateRocks() {
+      rocks.forEach(rock => rock.y += 4);
+    }
+
+    function checkCollision() {
+      for (let rock of rocks) {
+        if (
+          rock.x < player.x + player.width &&
+          rock.x + rockSize > player.x &&
+          rock.y < player.y + player.height &&
+          rock.y + rockSize > player.y
+        ) {
+          gameOver = true;
+        }
+      }
+    }
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'ArrowLeft') player.x -= player.speed;
+      if (e.key === 'ArrowRight') player.x += player.speed;
+    });
+
+    function gameLoop() {
+      if (gameOver) {
+        ctx.fillStyle = 'white';
+        ctx.font = '30px Arial';
+        ctx.fillText('Game Over', 130, 300);
+        return;
+      }
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawPlayer();
+      drawRocks();
+      updateRocks();
+      checkCollision();
+
+      requestAnimationFrame(gameLoop);
+    }
+
+    setInterval(spawnRock, 1000);
+    gameLoop();
+  </script>
+</body>
+</html>
