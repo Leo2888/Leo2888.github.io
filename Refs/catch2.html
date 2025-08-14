@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catch2 Introduction - Modern C++ Testing</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #3498db, #2ecc71);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+            padding: 30px;
+            border-radius: 15px;
+            background: #f8f9fa;
+            border-left: 5px solid #3498db;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .section h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 2rem;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        
+        .section h3 {
+            color: #34495e;
+            margin: 20px 0 10px 0;
+            font-size: 1.4rem;
+        }
+        
+        .code-block {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.3);
+        }
+        
+        .code-block pre {
+            margin: 0;
+            white-space: pre-wrap;
+        }
+        
+        .highlight {
+            background: #f39c12;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .feature-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-top: 4px solid #3498db;
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        
+        .feature-card h4 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .nav-tabs {
+            display: flex;
+            background: #34495e;
+            border-radius: 10px 10px 0 0;
+            overflow: hidden;
+        }
+        
+        .nav-tab {
+            flex: 1;
+            padding: 15px;
+            background: #34495e;
+            color: white;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            text-align: center;
+        }
+        
+        .nav-tab.active {
+            background: #3498db;
+        }
+        
+        .nav-tab:hover {
+            background: #2980b9;
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 20px;
+            background: #2c3e50;
+            color: #ecf0f1;
+            border-radius: 0 0 10px 10px;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .pro-tip {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .pro-tip h4 {
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .warning {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        
+        .setup-steps {
+            counter-reset: step-counter;
+        }
+        
+        .setup-step {
+            counter-increment: step-counter;
+            position: relative;
+            padding-left: 60px;
+            margin: 20px 0;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .setup-step::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #3498db;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .interactive-example {
+            background: #e8f4f8;
+            border: 2px solid #3498db;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            margin: 5px;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+        
+        #output {
+            background: #2c3e50;
+            color: #2ecc71;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-family: monospace;
+            min-height: 100px;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Catch2</h1>
+            <p>Modern C++ Testing Framework for Students & Developers</p>
+        </div>
+        
+        <div class="content">
+            <!-- Introduction Section -->
+            <div class="section">
+                <h2>🚀 What is Catch2?</h2>
+                <p>Catch2 is a modern, header-only testing framework for C++ that makes writing tests enjoyable and productive. Unlike traditional testing frameworks, Catch2 uses natural language expressions and requires minimal boilerplate code.</p>
+                
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>🎯 Header-Only</h4>
+                        <p>Just include one header file - no complex build configuration needed!</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>📝 Natural Syntax</h4>
+                        <p>Write tests that read like English using REQUIRE() and CHECK() macros.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>🔧 Rich Output</h4>
+                        <p>Detailed failure messages that help you debug issues quickly.</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>⚡ Fast Compilation</h4>
+                        <p>Optimized for fast compilation and execution of test suites.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Setup Section -->
+            <div class="section">
+                <h2>⚙️ Getting Started</h2>
+                
+                <div class="setup-steps">
+                    <div class="setup-step">
+                        <h3>Download Catch2</h3>
+                        <p>Download the single header file from <a href="https://github.com/catchorg/Catch2" target="_blank">GitHub</a> or use a package manager:</p>
+                        <div class="code-block">
+                            <pre># Using vcpkg
+vcpkg install catch2
+
+# Using conan
+conan install catch2/3.4.0@
+
+# Or just download catch.hpp directly</pre>
+                        </div>
+                    </div>
+                    
+                    <div class="setup-step">
+                        <h3>Include in Your Project</h3>
+                        <p>For the single-header version, just include it:</p>
+                        <div class="code-block">
+                            <pre>#define CATCH_CONFIG_MAIN  // This tells Catch to provide a main()
+#include "catch.hpp"</pre>
+                        </div>
+                    </div>
+                    
+                    <div class="setup-step">
+                        <h3>Compile and Run</h3>
+                        <div class="code-block">
+                            <pre>g++ -std=c++17 test.cpp -o test
+./test</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Basic Syntax Section -->
+            <div class="section">
+                <h2>📚 Basic Syntax & Concepts</h2>
+                
+                <div class="nav-tabs">
+                    <div class="nav-tab active" onclick="showTab('basic')">Basic Tests</div>
+                    <div class="nav-tab" onclick="showTab('assertions')">Assertions</div>
+                    <div class="nav-tab" onclick="showTab('sections')">Sections</div>
+                    <div class="nav-tab" onclick="showTab('fixtures')">Fixtures</div>
+                </div>
+                
+                <div id="basic" class="tab-content active">
+                    <h3>Your First Test</h3>
+                    <pre><code>#define CATCH_CONFIG_MAIN
+#include "catch.hpp"
+
+TEST_CASE("Basic arithmetic operations") {
+    REQUIRE(2 + 2 == 4);
+    REQUIRE(5 * 3 == 15);
+    REQUIRE(10 / 2 == 5);
+}
+
+TEST_CASE("String operations", "[strings]") {
+    std::string str = "Hello";
+    REQUIRE(str.length() == 5);
+    REQUIRE(str + " World" == "Hello World");
+}</code></pre>
+                </div>
+                
+                <div id="assertions" class="tab-content">
+                    <h3>Assertion Macros</h3>
+                    <pre><code>TEST_CASE("Different assertion types") {
+    // REQUIRE stops execution if failed
+    REQUIRE(true);
+    
+    // CHECK continues even if failed
+    CHECK(2 + 2 == 4);
+    CHECK(3 * 3 == 9);
+    
+    // REQUIRE_FALSE for negative assertions
+    REQUIRE_FALSE(1 == 2);
+    
+    // Exception testing
+    REQUIRE_THROWS_AS(throw std::runtime_error("error"), std::runtime_error);
+    REQUIRE_NOTHROW(2 + 2);
+}</code></pre>
+                </div>
+                
+                <div id="sections" class="tab-content">
+                    <h3>Organizing Tests with Sections</h3>
+                    <pre><code>TEST_CASE("Vector operations") {
+    std::vector&lt;int&gt; vec;
+    
+    SECTION("when empty") {
+        REQUIRE(vec.empty());
+        REQUIRE(vec.size() == 0);
+    }
+    
+    SECTION("after adding elements") {
+        vec.push_back(1);
+        vec.push_back(2);
+        
+        REQUIRE(vec.size() == 2);
+        REQUIRE(vec[0] == 1);
+        REQUIRE(vec[1] == 2);
+    }
+}</code></pre>
+                </div>
+                
+                <div id="fixtures" class="tab-content">
+                    <h3>Test Fixtures</h3>
+                    <pre><code>class DatabaseTest {
+public:
+    DatabaseTest() {
+        // Setup code
+        db.connect("test_db");
+    }
+    
+    ~DatabaseTest() {
+        // Cleanup code
+        db.disconnect();
+    }
+    
+protected:
+    Database db;
+};
+
+TEST_CASE_METHOD(DatabaseTest, "Database operations") {
+    REQUIRE(db.isConnected());
+    
+    db.insert("key", "value");
+    REQUIRE(db.get("key") == "value");
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- Advanced Features -->
+            <div class="section">
+                <h2>🔥 Advanced Features</h2>
+                
+                <h3>Parameterized Tests</h3>
+                <div class="code-block">
+                    <pre>TEST_CASE("Prime number testing") {
+    int number = GENERATE(2, 3, 5, 7, 11, 13, 17, 19, 23);
+    
+    REQUIRE(isPrime(number) == true);
+}
+
+TEST_CASE("Range testing") {
+    int value = GENERATE(range(1, 10));
+    
+    REQUIRE(value >= 1);
+    REQUIRE(value < 10);
+}</pre>
+                </div>
+                
+                <h3>Matchers for Complex Assertions</h3>
+                <div class="code-block">
+                    <pre>#include "catch.hpp"
+
+TEST_CASE("String matchers") {
+    std::string text = "Hello World";
+    
+    REQUIRE_THAT(text, Catch::StartsWith("Hello"));
+    REQUIRE_THAT(text, Catch::EndsWith("World"));
+    REQUIRE_THAT(text, Catch::Contains("lo Wo"));
+}
+
+TEST_CASE("Floating point comparisons") {
+    double result = 1.0 / 3.0;
+    
+    REQUIRE_THAT(result, Catch::WithinAbs(0.333333, 0.000001));
+    REQUIRE_THAT(result, Catch::WithinRel(0.333333, 0.01));
+}</pre>
+                </div>
+
+                <div class="pro-tip">
+                    <h4>💡 Pro Tip</h4>
+                    <p>Use tags to organize and run specific groups of tests: <code>TEST_CASE("My test", "[fast][unit]")</code>. Then run with: <code>./test [fast]</code></p>
+                </div>
+            </div>
+
+            <!-- LeetCode Examples -->
+            <div class="section">
+                <h2>🧩 LeetCode & Interview Prep Examples</h2>
+                
+                <h3>Testing Algorithm Solutions</h3>
+                <div class="code-block">
+                    <pre>// Two Sum problem solution
+std::vector&lt;int&gt; twoSum(std::vector&lt;int&gt;&amp; nums, int target) {
+    std::unordered_map&lt;int, int&gt; map;
+    for (int i = 0; i &lt; nums.size(); i++) {
+        int complement = target - nums[i];
+        if (map.find(complement) != map.end()) {
+            return {map[complement], i};
+        }
+        map[nums[i]] = i;
+    }
+    return {};
+}
+
+TEST_CASE("Two Sum Algorithm") {
+    SECTION("Basic case") {
+        std::vector&lt;int&gt; nums = {2, 7, 11, 15};
+        int target = 9;
+        std::vector&lt;int&gt; expected = {0, 1};
+        
+        REQUIRE(twoSum(nums, target) == expected);
+    }
+    
+    SECTION("Edge cases") {
+        std::vector&lt;int&gt; nums1 = {3, 3};
+        REQUIRE(twoSum(nums1, 6) == std::vector&lt;int&gt;{0, 1});
+        
+        std::vector&lt;int&gt; nums2 = {1, 2};
+        REQUIRE(twoSum(nums2, 4).empty());
+    }
+    
+    SECTION("Large input") {
+        std::vector&lt;int&gt; large_nums(10000);
+        std::iota(large_nums.begin(), large_nums.end(), 1);
+        
+        auto result = twoSum(large_nums, 19999);
+        REQUIRE(result == std::vector&lt;int&gt;{9998, 9999});
+    }
+}</pre>
+                </div>
+
+                <div class="warning">
+                    <strong>⚠️ Common Interview Testing Patterns:</strong><br>
+                    • Test empty inputs<br>
+                    • Test single element<br>
+                    • Test boundary conditions<br>
+                    • Test performance with large inputs<br>
+                    • Test with duplicate elements
+                </div>
+            </div>
+
+            <!-- Interactive Demo -->
+            <div class="section">
+                <h2>🎮 Interactive Demo</h2>
+                
+                <div class="interactive-example">
+                    <h3>Try Different Test Scenarios</h3>
+                    <p>Click the buttons below to see how different Catch2 assertions work:</p>
+                    
+                    <button onclick="runExample('basic')">Basic REQUIRE</button>
+                    <button onclick="runExample('check')">CHECK vs REQUIRE</button>
+                    <button onclick="runExample('exception')">Exception Testing</button>
+                    <button onclick="runExample('matcher')">String Matchers</button>
+                    
+                    <div id="output">Click a button above to see Catch2 output examples...</div>
+                </div>
+            </div>
+
+            <!-- Best Practices -->
+            <div class="section">
+                <h2>✅ Best Practices & Tips</h2>
+                
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>🎯 Write Clear Test Names</h4>
+                        <p>Use descriptive names that explain what is being tested and expected behavior.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <h4>🔍 One Concept Per Test</h4>
+                        <p>Keep tests focused on testing one specific behavior or feature.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <h4>📊 Use Sections Wisely</h4>
+                        <p>Group related test scenarios using SECTION to reduce code duplication.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <h4>🏷️ Tag Your Tests</h4>
+                        <p>Use tags to categorize tests by speed, type, or component for easy filtering.</p>
+                    </div>
+                </div>
+
+                <div class="pro-tip">
+                    <h4>🚀 Performance Tips</h4>
+                    <p>• Use <span class="highlight">CHECK</span> instead of <span class="highlight">REQUIRE</span> when you want to see all failures<br>
+                    • Compile with <span class="highlight">-O2</span> for release testing<br>
+                    • Use <span class="highlight">BENCHMARK</span> macro for performance testing<br>
+                    • Consider splitting large test files for faster compilation</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showTab(tabName) {
+            // Hide all tab contents
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => content.classList.remove('active'));
+            
+            // Remove active class from all tabs
+            const tabs = document.querySelectorAll('.nav-tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            // Show selected tab content
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+        }
+        
+        function runExample(type) {
+            const output = document.getElementById('output');
+            
+            const examples = {
+                'basic': `Running basic REQUIRE example...
+
+TEST_CASE("Basic arithmetic") {
+    REQUIRE(2 + 2 == 4);  ✓ PASSED
+    REQUIRE(5 * 3 == 15); ✓ PASSED
+}
+
+All tests passed (2 assertions in 1 test case)`,
+                
+                'check': `Running CHECK vs REQUIRE example...
+
+TEST_CASE("Multiple checks") {
+    CHECK(2 + 2 == 4);    ✓ PASSED
+    CHECK(3 + 3 == 7);    ✗ FAILED: 6 == 7
+    CHECK(1 + 1 == 2);    ✓ PASSED
+    // Test continues after CHECK failure
+}
+
+Test failed (2 passed, 1 failed)`,
+                
+                'exception': `Running exception testing example...
+
+TEST_CASE("Exception handling") {
+    REQUIRE_THROWS_AS(
+        throw std::runtime_error("test"), 
+        std::runtime_error
+    ); ✓ PASSED
+    
+    REQUIRE_NOTHROW(2 + 2); ✓ PASSED
+}
+
+All tests passed (2 assertions in 1 test case)`,
+                
+                'matcher': `Running string matcher example...
+
+TEST_CASE("String matchers") {
+    std::string text = "Hello World";
+    
+    REQUIRE_THAT(text, StartsWith("Hello")); ✓ PASSED
+    REQUIRE_THAT(text, EndsWith("World"));   ✓ PASSED
+    REQUIRE_THAT(text, Contains("lo Wo"));   ✓ PASSED
+}
+
+All tests passed (3 assertions in 1 test case)`
+            };
+            
+            output.textContent = examples[type] || 'Example not found';
+        }
+        
+        // Add some interactive animations
+        document.addEventListener('DOMContentLoaded', function() {
+            const sections = document.querySelectorAll('.section');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            });
+            
+            sections.forEach(section => {
+                section.style.opacity = '0';
+                section.style.transform = 'translateY(20px)';
+                section.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(section);
+            });
+        });
+    </script>
+</body>
+</html>
