@@ -1,0 +1,29 @@
+Unity Editor version:    6000.3.21f1 (c02631ffc030)
+Branch:                  6000.3/staging
+Build type:              Release
+Batch mode:              YES
+macOS version:           Version 26.3.1 (a) (Build 25D771280a)
+Darwin version:          25.3.0
+Architecture:            arm64
+Running under Rosetta:   NO
+Available memory:        24576 MB
+Date:                    2026-08-13T09:56:55Z
+[Licensing::Module] Trying to connect to existing licensing client channel...
+[Licensing::IpcConnector] Channel LicenseClient-leo doesn't exist
+Launching external process: /Applications/Unity/Hub/Editor/6000.3.21f1/Unity.app/Contents/Helpers/UnityLicensingClient.app/Contents/MacOS/Unity.Licensing.Client
+[Licensing::Module] Successfully launched the LicensingClient (PId: 20201)
+Launching external process: /Applications/Unity/Hub/Editor/6000.3.21f1/Unity.app/Contents/Resources/PackageManager/Server/UnityPackageManager
+
+COMMAND LINE ARGUMENTS:
+/Applications/Unity/Hub/Editor/6000.3.21f1/Unity.app/Contents/MacOS/Unity
+-batchmode
+-nographics
+-quit
+-projectPath
+/Users/leo/Projects/_oth/SG-new/unity/Build/WebGL/unity
+-executeMethod
+BuildWebGL.Build
+-logFile
+logs/unity6-webgl-build.log
+Couldn't set project path to: 
+[Package Manager] Server process was shutdown
